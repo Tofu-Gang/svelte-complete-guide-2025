@@ -17,6 +17,8 @@
 <hr>
 <p>36. Displaying a List of Data (#each loops & @const tags)</p>
 <hr>
+<p>37. Handling Removing Elements from An Array Correctly</p>
+<hr>
 <Notifications />
 
 <style>

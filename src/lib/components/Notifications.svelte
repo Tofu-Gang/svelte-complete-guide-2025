@@ -6,8 +6,10 @@
 </script>
 
 <ul>
-<!-- loop through all notifications -->
-	{#each notifications as notification, index}
+	<!-- loop through all notifications -->
+  <!-- identify each notification by its id (parenthesis at the end) so the correct notification
+       is removed and index is not renumbered -->
+	{#each notifications as notification, index (notification.id)}
 		<!-- constants can be defined in markup -->
 		<!--{@const test = "test constant"}-->
 		<li>

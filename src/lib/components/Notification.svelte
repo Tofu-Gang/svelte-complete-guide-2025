@@ -11,6 +11,10 @@
 		}
 		onremove?: (id: string) => void
 	} = $props();
+	// to keep the list of notifications working properly, one way is to define everything as derived
+	// values; however, index keeps changing that way
+	// const { index, id, title, body, date } = $derived(notification);
+	// const dateObject = $derived(new Date(date));
 	const { index, id, title, body, date } = notification;
 	const dateObject = new Date(date);
 </script>
