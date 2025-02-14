@@ -12,12 +12,17 @@
 		}
 	});
 	console.log(array, objectsArray, object);
+	// logs snapshot (not a proxy) if the object mutates
+	// inspect function can be changed, default is console.log
+	$inspect(object).with(console.trace);
 
 	$effect(() => {
 		console.log('object effect');
 		console.log(object);
 	});
 	$effect(() => {
+		// highlights in the console which state change caused this effect to run
+		$inspect.trace();
 		console.log('object.firstName effect');
 		console.log(object.firstName);
 	});
@@ -35,6 +40,8 @@
 	});
 </script>
 
+<!-- creates a breakpoint and tracks selected variables -->
+{@debug object, array}
 <h2>{object.firstName}</h2>
 <h2>{object.address.city}</h2>
 

@@ -10,6 +10,8 @@
 <hr>
 <p>34. Deep State Reactivity in Svelte</p>
 <hr>
+<p>35. Debugging in Svelte</p>
+<hr>
 <DeepState />
 <hr>
 
