@@ -1,11 +1,21 @@
 <script lang="ts">
 	import dummyRates from '$lib/utils/dummy-rates';
+	import { untrack } from 'svelte';
 
-	let baseValue = $state(1);
-	let baseCurrency = $state("usd");
-	let baseRates = $derived(dummyRates[baseCurrency]);
-	let targetCurrency = $state("eur");
-	let targetValue = $derived(baseValue && baseRates[targetCurrency] && baseValue * baseRates[targetCurrency]);
+	let baseValue: number | undefined = $state(1);
+	let baseCurrency: string = $state("usd");
+	let baseRates: Record<string, number> = $derived(dummyRates[baseCurrency]);
+	let targetCurrency: string = $state("eur");
+	let targetValue: number | undefined = $state();
+
+	$effect(() => {
+		targetValue = baseValue && baseRates[targetCurrency] && baseValue * baseRates[targetCurrency];
+		console.log('Calculating Target', untrack(() => targetValue));
+	});
+	$effect(() => {
+		baseValue = targetValue && baseRates[targetCurrency] && targetValue / baseRates[targetCurrency];
+		console.log('Calculating Base', untrack(() => baseValue));
+	});
 </script>
 
 <div class="wrapper">
@@ -28,7 +38,7 @@
 		<input type="number" bind:value={
 		() => baseValue,
 		(newValue) => {
-			if(newValue < 0) {
+			if(newValue && newValue < 0) {
 				baseValue = 1;
 				return;
 			}
@@ -41,7 +51,7 @@
 		</select>
 	</div>
 	<div class="target">
-		<input value={targetValue} type="number">
+		<input bind:value={targetValue} type="number">
 		<select bind:value={targetCurrency}>
 			<option value="usd">United States Dollar</option>
 			<option value="eur">Euro</option>
