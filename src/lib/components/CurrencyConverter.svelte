@@ -5,9 +5,21 @@
 	let baseCurrency: string = $state("usd");
 	let baseRates: Record<string, number> = $derived(dummyRates[baseCurrency]);
 	let targetCurrency: string = $state("eur");
-	let targetValue: number | undefined = $state(calculateTarget());
+	let targetValue = {
+		get value() {
+			const result = calculateTarget();
+			console.log("targetValue.getter", result);
+			return result;
+		},
 
-	function calculateBase(): number | undefined {
+		set value(newValue) {
+			const result = calculateBase(newValue);
+			console.log("targetValue.setter", result);
+			baseValue = result;
+		}
+	};
+
+	function calculateBase(targetValue?: number): number | undefined {
 		if(targetValue && baseRates[targetCurrency]) {
 			return Number((targetValue / baseRates[targetCurrency]).toFixed(2));
 		}
@@ -17,30 +29,6 @@
 		if(baseValue && baseRates[targetCurrency]) {
 			return Number((baseValue * baseRates[targetCurrency]).toFixed(2));
 		}
-	}
-
-	function updateBaseValue(newValue: number): void {
-		baseValue = newValue;
-		targetValue = calculateTarget();
-		console.log("Calculate Target value", targetValue);
-	}
-
-	function updateTargetValue(newValue: number): void {
-		targetValue = newValue;
-		baseValue = calculateBase();
-		console.log("Calculate Base value", baseValue);
-	}
-
-	function updateBaseCurrency(newValue: string): void {
-		baseCurrency = newValue;
-		targetValue = calculateTarget();
-		console.log("Changed Base currency; Calculate Target value", targetValue);
-	}
-
-	function updateTargetCurrency(newValue: string): void {
-		targetCurrency = newValue;
-		targetValue = calculateTarget();
-		console.log("Changed Target currency; Calculate Target value", targetValue);
 	}
 </script>
 
@@ -60,24 +48,16 @@
 		</span>
 	</div>
 	<div class="base">
-		<input type="number" value={baseValue} oninput={(event) => {
-			updateBaseValue(Number(event.currentTarget.value));
-		}}>
-		<select value={baseCurrency} oninput={(event) => {
-			updateBaseCurrency(event.currentTarget.value);
-		}}>
+		<input type="number" bind:value={baseValue}>
+		<select bind:value={baseCurrency}>
 			<option value="usd">United States Dollar</option>
 			<option value="eur">Euro</option>
 			<option value="gbp">Pound Sterling</option>
 		</select>
 	</div>
 	<div class="target">
-		<input type="number" value={targetValue} oninput={(event) => {
-			updateTargetValue(Number(event.currentTarget.value));
-	}}>
-		<select value={targetCurrency} oninput={(event) => {
-			updateTargetCurrency(event.currentTarget.value);
-		}}>
+		<input type="number" bind:value={targetValue.value}>
+		<select bind:value={targetCurrency}>
 			<option value="usd">United States Dollar</option>
 			<option value="eur">Euro</option>
 			<option value="gbp">Pound Sterling</option>
