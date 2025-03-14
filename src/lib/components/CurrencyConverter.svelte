@@ -1,21 +1,47 @@
 <script lang="ts">
 	import dummyRates from '$lib/utils/dummy-rates';
-	import { untrack } from 'svelte';
 
 	let baseValue: number | undefined = $state(1);
 	let baseCurrency: string = $state("usd");
 	let baseRates: Record<string, number> = $derived(dummyRates[baseCurrency]);
 	let targetCurrency: string = $state("eur");
-	let targetValue: number | undefined = $state();
+	let targetValue: number | undefined = $state(calculateTarget());
 
-	$effect(() => {
-		targetValue = baseValue && baseRates[targetCurrency] && baseValue * baseRates[targetCurrency];
-		console.log('Calculating Target', untrack(() => targetValue));
-	});
-	$effect(() => {
-		baseValue = targetValue && baseRates[targetCurrency] && targetValue / baseRates[targetCurrency];
-		console.log('Calculating Base', untrack(() => baseValue));
-	});
+	function calculateBase(): number | undefined {
+		if(targetValue && baseRates[targetCurrency]) {
+			return Number((targetValue / baseRates[targetCurrency]).toFixed(2));
+		}
+	}
+
+	function calculateTarget(): number | undefined {
+		if(baseValue && baseRates[targetCurrency]) {
+			return Number((baseValue * baseRates[targetCurrency]).toFixed(2));
+		}
+	}
+
+	function updateBaseValue(newValue: number): void {
+		baseValue = newValue;
+		targetValue = calculateTarget();
+		console.log("Calculate Target value", targetValue);
+	}
+
+	function updateTargetValue(newValue: number): void {
+		targetValue = newValue;
+		baseValue = calculateBase();
+		console.log("Calculate Base value", baseValue);
+	}
+
+	function updateBaseCurrency(newValue: string): void {
+		baseCurrency = newValue;
+		targetValue = calculateTarget();
+		console.log("Changed Base currency; Calculate Target value", targetValue);
+	}
+
+	function updateTargetCurrency(newValue: string): void {
+		targetCurrency = newValue;
+		targetValue = calculateTarget();
+		console.log("Changed Target currency; Calculate Target value", targetValue);
+	}
 </script>
 
 <div class="wrapper">
@@ -34,25 +60,24 @@
 		</span>
 	</div>
 	<div class="base">
-		<!-- specify getter and setter functions for bind:value directive -->
-		<input type="number" bind:value={
-		() => baseValue,
-		(newValue) => {
-			if(newValue && newValue < 0) {
-				baseValue = 1;
-				return;
-			}
-			baseValue = newValue
+		<input type="number" value={baseValue} oninput={(event) => {
+			updateBaseValue(Number(event.currentTarget.value));
 		}}>
-		<select bind:value={baseCurrency}>
+		<select value={baseCurrency} oninput={(event) => {
+			updateBaseCurrency(event.currentTarget.value);
+		}}>
 			<option value="usd">United States Dollar</option>
 			<option value="eur">Euro</option>
 			<option value="gbp">Pound Sterling</option>
 		</select>
 	</div>
 	<div class="target">
-		<input bind:value={targetValue} type="number">
-		<select bind:value={targetCurrency}>
+		<input type="number" value={targetValue} oninput={(event) => {
+			updateTargetValue(Number(event.currentTarget.value));
+	}}>
+		<select value={targetCurrency} oninput={(event) => {
+			updateTargetCurrency(event.currentTarget.value);
+		}}>
 			<option value="usd">United States Dollar</option>
 			<option value="eur">Euro</option>
 			<option value="gbp">Pound Sterling</option>
