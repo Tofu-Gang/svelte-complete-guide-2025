@@ -1,19 +1,19 @@
-class Counter {
-	value: number = $state(0);
+let count = $state(0);
 
-	constructor() {
-		$effect(() => {
-			console.log(this.value);
-		});
+export default {
+	get value(): number {
+		return count;
+	},
+
+	set value(value: number) {
+		count = value;
+	},
+
+	increment(): void {
+		count++;
+	},
+
+	reset(): void {
+		count = 0;
 	}
-
-	increment = () => {
-		this.value++;
-	};
-
-	reset = () => {
-		this.value = 0;
-	};
-}
-
-export default Counter;
+};
