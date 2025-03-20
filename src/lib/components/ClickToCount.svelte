@@ -1,18 +1,14 @@
 <script lang="ts">
 	import Button from './Button.svelte';
-	let count = $state(0);
-	function increment() {
-		count += 1;
-	}
-	function reset() {
-		count = 0;
-	}
+	import createCounter from '$lib/utils/counter.svelte';
+
+	const counter = createCounter();
 </script>
 
 <div class="wrapper">
-	<h2>{count}</h2>
-	<Button onclick={increment}>Increment</Button>
-	<Button --buttonBgColor="#fff" --buttonTextColor="#000" onclick={reset}>Reset</Button>
+	<h2>{counter.value}</h2>
+	<Button onclick={counter.increment}>Increment</Button>
+	<Button --buttonBgColor="#fff" --buttonTextColor="#000" onclick={counter.reset}>Reset</Button>
 </div>
 
 <style>
