@@ -1,19 +1,21 @@
-let count = $state(0);
+class Counter {
+	value = $state(0);
 
-export default {
-	get value(): number {
-		return count;
-	},
+	// does not work!!!
+	// constructor() {
+	// 	$effect(() => {
+	// 		console.log(this.value);
+	// 	});
+	// }
 
-	set value(value: number) {
-		count = value;
-	},
+	increment = () => {
+		this.value += 1;
+	};
 
-	increment(): void {
-		count++;
-	},
+	reset = () => {
+		this.value = 0;
+	};
+}
 
-	reset(): void {
-		count = 0;
-	}
-};
+const counter = new Counter();
+export default counter;
