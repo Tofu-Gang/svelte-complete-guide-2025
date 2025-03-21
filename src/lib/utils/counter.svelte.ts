@@ -2,6 +2,12 @@ const counter = $state({
 	value: 0
 });
 
+$effect.root(() => {
+	$effect(() => {
+		console.log(counter.value);
+	});
+});
+
 export default counter;
 
 export function increment(): void {
