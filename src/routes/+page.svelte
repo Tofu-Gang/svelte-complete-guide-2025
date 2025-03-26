@@ -1,34 +1,21 @@
 <script lang="ts">
-	import { SvelteDate, SvelteURL } from 'svelte/reactivity';
-	import CurrencyConverter from '$lib/components/CurrencyConverter.svelte';
+	import scrollY from "$lib/utils/scroll-y.svelte"
 
-	let date = new SvelteDate();
-	const url = new SvelteURL("https://example.com/path");
+	let show1 = $state(true);
+	let show2 = $state(true);
 
-	$effect(() => {
-		const interval = setInterval(() => {
-			date.setTime(Date.now());
-		}, 1000);
-
-		return () => {
-			clearInterval(interval);
-		}
-	})
+	console.log(scrollY.current);
 </script>
 
-<CurrencyConverter />
-
-<p>
-	{date.getHours().toString().padStart(2, "0")}:{date.getMinutes().toString().padStart(2, "0")}:{date.getSeconds().toString().padStart(2, "0")}
-</p>
-
-<!-- changes to these -->
-<input bind:value={url.protocol} />
-<input bind:value={url.hostname} />
-<input bind:value={url.pathname} />
-<hr />
-<!-- will update `href` and vice versa -->
-<input bind:value={url.href} />
+<input type="checkbox" bind:checked={show1} />
+<input type="checkbox" bind:checked={show2} />
+{#if show1}
+	<h1 style="position: fixed;top: 100px">{scrollY.current}</h1>
+{/if}
+{#if show2}
+	<h1 style="position: fixed;">{scrollY.current}</h1>
+{/if}
+<div style="height: 2000px;"></div>
 
 <style>
 	:global(body) {
