@@ -2,6 +2,7 @@
 	let firstName = $state("Jakub");
 	let lastName = $state("Franěk");
 	let fullName = $derived.by(() => {
+		console.log("fullName derived");
 		return `${firstName} ${lastName}`;
 	});
 	let userName = $state("jfranek");
@@ -15,6 +16,7 @@
 	});
 </script>
 
+<button onclick={() => console.log(fullName)}>Get Full Name</button>
 <ul>
 	<li>
 		<label for="userName">User Name</label>
